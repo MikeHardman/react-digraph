@@ -755,7 +755,7 @@ class GraphView extends Component {
       .attr("opacity", 1);
 
     // Merge
-    edges.enter().merge(edges);
+    edges.enter().merge(newEdges);
 
     function updateEdge(d, i, els) {
       // setTimeout is used to unblock the browser
