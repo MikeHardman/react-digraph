@@ -13,17 +13,17 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/uber/react-digraph.git"
+    "url": "https://github.com/MikeHardman/react-digraph.git"
   },
   "bugs": {
-    "url": "https://github.com/uber/react-digraph/issues/new",
-    "email": "antonb@uber.com"
+    "url": "https://github.com/MikeHardman/react-digraph/issues/new",
+    "email": "mike@mikedoescode.com"
   },
   "engines": {
     "node": ">= 0.10.0"
   },
   "license": "MIT",
-  "main": "dist/index.js",
+  "main": "src/index.js",
   "peerDependencies": {
     "d3": "^4.1.1",
     "radium": "^0.19.5",
