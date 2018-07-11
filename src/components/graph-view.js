@@ -26,6 +26,7 @@
 import React, {
   Component
 } from 'react';
+import ReactDOMServer from 'react-dom/server';
 import PropTypes from 'prop-types';
 import * as d3 from 'd3';
 import Radium from 'radium';
@@ -987,11 +988,14 @@ GraphView.propTypes = {
   canCreateEdge: PropTypes.func,
   canDeleteEdge: PropTypes.func,
   renderEdge: PropTypes.func,
+  renderEditor: PropTypes.func,
   renderNode: PropTypes.func,
   renderDefs: PropTypes.func,
   renderBackground: PropTypes.func,
   readOnly: PropTypes.bool,
   enableFocus: PropTypes.bool,
+  displayEditor: PropTypes.bool,
+  editorToggleRequested: PropTypes.func,
   maxTitleChars: PropTypes.number, // Per line.
   transitionTime: PropTypes.number, // D3 Enter/Exit duration
   primary: PropTypes.string,
@@ -1014,6 +1018,7 @@ GraphView.propTypes = {
 
 GraphView.defaultProps = {
   readOnly: false,
+  displayEditor:false,
   maxTitleChars: 9,
   transitionTime: 150,
   primary: 'dodgerblue',
@@ -1053,6 +1058,8 @@ GraphView.defaultProps = {
       .select('path')
         .attr('d', graphView.getPathDescription);
   },
+  renderEditor: undefined,  
+  editorToggleRequested: undefined,
   renderNode: (graphView, domNode, datum, index, elements) => {
     // For new nodes, add necessary child domNodes
     const selection = d3.select(domNode);
@@ -1067,6 +1074,27 @@ GraphView.defaultProps = {
         .attr("y",  -graphView.props.nodeSize/2)
         .attr("width", graphView.props.nodeSize)
         .attr("height", graphView.props.nodeSize);
+
+        if(graphView.props.renderEditor !== undefined && graphView.props.displayEditor)
+        {
+          var fo = d3.select(domNode)
+          .append('foreignObject')
+            .attr('width',250)
+            .attr('x', 25);
+    
+          var hDiv = fo.append('xhtml:div');
+          var div = hDiv.append('div');
+          // This is really hacky, there has to be a better way of rendering to this div...
+          // As soon as this is moved over into its own repo and pulled into the project
+          // I will get onto making this work without react-dom server side stuff
+          div.html(ReactDOMServer.renderToString(graphView.props.renderEditor(datum)))
+    
+          var height = hDiv._groups[0][0].getBoundingClientRect().height
+    
+          fo.attr('height', height)
+          .attr('y', -25-height)
+        }
+
     }
 
     let style = graphView.getNodeStyle(datum, graphView.props.selected);
